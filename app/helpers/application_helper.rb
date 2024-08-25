@@ -1,31 +1,58 @@
 module ApplicationHelper
+  def has_role?(role)
+    current_user && current_user.has_role?(role)
+  end
+
   def markdown(text)
-    return '' if text.blank?
-    MarkdownRenderer.new.render(text).html_safe
+    return '' if text.nil?
+
+    options = {
+      hard_wrap: true,
+      input: 'GFM',
+      syntax_highlighter: 'rouge',
+      syntax_highlighter_opts: {
+        css_class: 'highlight',
+        line_numbers: true
+      }
+    }
+
+    Kramdown::Document.new(text, options).to_html.html_safe
   end
 
-  def time_ago_in_words_or_date(time)
-    if time > 1.week.ago
-      time_ago_in_words(time) + ' ago'
-    else
-      time.strftime('%B %d, %Y')
-    end
-  end
-
-  def user_avatar(user, size: 'sm')
-    classes = case size
-              when 'xs' then 'width: 20px; height: 20px;'
-              when 'sm' then 'width: 32px; height: 32px;'
-              when 'md' then 'width: 48px; height: 48px;'
-              when 'lg' then 'width: 64px; height: 64px;'
-              end
-
-    if user.avatar.attached?
-      image_tag user.avatar, class: 'rounded-circle', style: classes
-    else
-      content_tag :div, user.display_name.first.upcase,
-                  class: 'rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold',
-                  style: classes
-    end
+  def strip_markdown(text)
+    return '' if text.nil?
+    
+    # Remove code blocks
+    text = text.gsub(/```[\s\S]*?```/, '')
+    
+    # Remove inline code
+    text = text.gsub(/`[^`]*`/, '')
+    
+    # Remove headers
+    text = text.gsub(/^#+\s+/, '')
+    
+    # Remove emphasis
+    text = text.gsub(/[*_]{1,2}([^*_]+)[*_]{1,2}/, '\1')
+    
+    # Remove links
+    text = text.gsub(/\[([^\]]+)\]\([^\)]+\)/, '\1')
+    
+    # Remove images
+    text = text.gsub(/!\[([^\]]*)\]\([^\)]+\)/, '')
+    
+    # Remove blockquotes
+    text = text.gsub(/^\s*>\s+/, '')
+    
+    # Remove horizontal rules
+    text = text.gsub(/^\s*[-*_]{3,}\s*$/, '')
+    
+    # Remove lists
+    text = text.gsub(/^\s*[\*\-+]\s+/, '')
+    text = text.gsub(/^\s*\d+\.\s+/, '')
+    
+    # Collapse multiple newlines
+    text = text.gsub(/\n{2,}/, "\n")
+    
+    text.strip
   end
 end

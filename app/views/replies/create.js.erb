@@ -1,0 +1,48 @@
+var repliesContainer = document.getElementById('discussion-replies');
+var replyForm = document.getElementById('new_reply');
+
+<% if @reply.persisted? %>
+  var newReplyHtml = '<%= j render @reply %>';
+  repliesContainer.insertAdjacentHTML('beforeend', newReplyHtml);
+  replyForm.reset();
+
+  // Show success message
+  var notification = document.createElement('div');
+  notification.className = 'notification is-success is-light';
+  notification.innerHTML = `
+    <button class="delete"></button>
+    Reply posted successfully!
+  `;
+
+  document.querySelector('.reply-form').insertAdjacentElement('beforebegin', notification);
+
+  // Add event listener to close button
+  notification.querySelector('.delete').addEventListener('click', function() {
+    notification.remove();
+  });
+
+  // Auto-remove notification after 3 seconds
+  setTimeout(function() {
+    notification.remove();
+  }, 3000);
+<% else %>
+  // Show error message
+  var notification = document.createElement('div');
+  notification.className = 'notification is-danger is-light';
+  notification.innerHTML = `
+    <button class="delete"></button>
+    Error: <%= j @reply.errors.full_messages.join(', ') %>
+  `;
+
+  document.querySelector('.reply-form').insertAdjacentElement('beforebegin', notification);
+
+  // Add event listener to close button
+  notification.querySelector('.delete').addEventListener('click', function() {
+    notification.remove();
+  });
+
+  // Auto-remove notification after 5 seconds
+  setTimeout(function() {
+    notification.remove();
+  }, 5000);
+<% end %>

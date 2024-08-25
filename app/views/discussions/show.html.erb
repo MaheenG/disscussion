@@ -1,134 +1,157 @@
-<div class="row">
-  <div class="col-lg-8">
-    <!-- Discussion Content -->
-    <div class="card shadow-sm mb-4">
-      <div class="card-header bg-white">
-        <div class="d-flex justify-content-between align-items-start">
-          <div>
-            <h1 class="h4 mb-2"><%= @discussion.title %></h1>
-            <div class="d-flex align-items-center text-muted small">
-              <span class="badge me-2" style="background-color: <%= @channel.color %>;">
-                <%= @channel.name %>
-              </span>
-              by <%= @discussion.user.display_name %>
-              <span class="mx-2">•</span>
-              <%= time_ago_in_words_or_date(@discussion.created_at) %>
-              <% if @discussion.pinned? %>
-                <i class="fas fa-thumbtack text-warning ms-2" title="Pinned"></i>
+<div class="columns">
+  <div class="column is-8">
+    <div class="card">
+      <div class="card-content">
+        <div class="media mb-5">
+          <div class="media-left">
+            <%= gravatar_image_tag(@discussion.user.email, class:'is-rounded', size: 64, alt: @discussion.user.username) %>
+          </div>
+          <div class="media-content">
+            <h1 class="title is-2 mb-2"><%= @discussion.title %></h1>
+            <div class="level is-mobile mb-2">
+              <div class="level-left">
+                <div class="tags">
+                  <% if @discussion.channel %>
+                    <%= link_to @discussion.channel, class: "tag is-info is-light" do %>
+                      <span class="icon is-small"><i class="fas fa-hashtag"></i></span>
+                      <span><%= @discussion.channel.channel %></span>
+                    <% end %>
+                  <% end %>
+                  <span class="tag is-light">
+                    <span class="icon is-small"><i class="fas fa-clock"></i></span>
+                    <span><%= time_ago_in_words(@discussion.created_at) %> ago</span>
+                  </span>
+                  <span class="tag is-light">
+                    <span class="icon is-small"><i class="fas fa-user"></i></span>
+                    <span><%= @discussion.user.username %></span>
+                  </span>
+                </div>
+              </div>
+              <% if discussion_author(@discussion) %>
+                <div class="level-right">
+                  <div class="dropdown is-right is-hoverable">
+                    <div class="dropdown-trigger">
+                      <button class="button is-light" aria-controls="discussion-menu">
+                        <span class="icon">
+                          <i class="fas fa-ellipsis-v"></i>
+                        </span>
+                      </button>
+                    </div>
+                    <div class="dropdown-menu" id="discussion-menu" role="menu">
+                      <div class="dropdown-content">
+                        <%= link_to edit_discussion_path(@discussion), class: 'dropdown-item' do %>
+                          <span class="icon"><i class="fas fa-edit"></i></span>
+                          <span>Edit Discussion</span>
+                        <% end %>
+                        <%= link_to discussion_path(@discussion), 
+                            method: :delete, 
+                            data: { confirm: "Are you sure you want to delete this discussion?" }, 
+                            class: "dropdown-item has-text-danger" do %>
+                          <span class="icon"><i class="fas fa-trash-alt"></i></span>
+                          <span>Delete Discussion</span>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               <% end %>
             </div>
           </div>
-          <% if can? :edit, @discussion %>
-            <div class="dropdown">
-              <button class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
-                <i class="fas fa-ellipsis-v"></i>
-              </button>
-              <ul class="dropdown-menu">
-                <li><%= link_to "Edit", edit_channel_discussion_path(@channel, @discussion), class: "dropdown-item" %></li>
-                <li><%= link_to "Delete", channel_discussion_path(@channel, @discussion), method: :delete, 
-                        confirm: "Are you sure?", class: "dropdown-item text-danger" %></li>
-              </ul>
+        </div>
+
+        <div class="content discussion-content">
+          <%= markdown(@discussion.content) %>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mt-6">
+      <div class="card-content">
+        <div class="level">
+          <div class="level-left">
+            <h2 class="title is-4">
+              <span class="icon-text">
+                <span class="icon">
+                  <i class="fas fa-comments"></i>
+                </span>
+                <span>Replies</span>
+              </span>
+              <span class="tag is-info is-light ml-2"><%= @discussion.replies.count %></span>
+            </h2>
+          </div>
+        </div>
+
+        <div id="discussion-replies" class="mt-5">
+          <%= render @discussion.replies %>
+        </div>
+
+        <div class="mt-6">
+          <h3 class="title is-5">
+            <span class="icon-text">
+              <span class="icon">
+                <i class="fas fa-reply"></i>
+              </span>
+              <span>Leave a reply</span>
+            </span>
+          </h3>
+          
+          <% if user_signed_in? %>
+            <%= render 'replies/form' %>
+          <% else %>
+            <div class="notification is-info is-light">
+              <p>To reply you need to <%= link_to 'login', new_user_session_path, class: "has-text-info" %>. 
+              Don't have an account? <%= link_to 'Sign up', new_user_registration_path, class: "has-text-info" %> for one.</p>
             </div>
           <% end %>
         </div>
       </div>
-      <div class="card-body">
-        <div class="d-flex mb-3">
-          <div class="flex-shrink-0 me-3">
-            <%= user_avatar(@discussion.user, size: 'lg') %>
-          </div>
-          <div class="flex-grow-1">
-            <div class="discussion-content">
-              <%= markdown(@discussion.content) %>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Replies Section -->
-    <div class="card shadow-sm">
-      <div class="card-header bg-white">
-        <h5 class="mb-0">
-          <i class="fas fa-reply me-2"></i>
-          Replies (<span id="replies-count"><%= @discussion.replies_count %></span>)
-        </h5>
-      </div>
-      <div class="card-body p-0">
-        <div id="replies-container">
-          <%= render @replies %>
-        </div>
-        
-        <% if @replies.respond_to?(:total_pages) && @replies.total_pages > 1 %>
-          <div class="p-3 border-top text-center">
-            <%= paginate @replies %>
-          </div>
-        <% end %>
-      </div>
-    </div>
-
-    <!-- Reply Form -->
-    <% if user_signed_in? %>
-      <div class="card shadow-sm mt-4">
-        <div class="card-header bg-white">
-          <h6 class="mb-0">Post a Reply</h6>
-        </div>
-        <div class="card-body">
-          <%= form_with model: [@channel, @discussion, @reply], local: false, id: "reply-form" do |form| %>
-            <div class="mb-3">
-              <%= form.text_area :content, class: "form-control", rows: 6, 
-                  placeholder: "Write your reply here... (Markdown supported)" %>
-              <div class="form-text">
-                <i class="fab fa-markdown me-1"></i>
-                Markdown is supported. You can use **bold**, *italic*, `code`, and more.
-              </div>
-            </div>
-            <div class="d-flex justify-content-between align-items-center">
-              <small class="text-muted">
-                <i class="fas fa-user me-1"></i>
-                Posting as <%= current_user.display_name %>
-              </small>
-              <%= form.submit "Post Reply", class: "btn btn-primary" %>
-            </div>
-          <% end %>
-        </div>
-      </div>
-    <% else %>
-      <div class="card shadow-sm mt-4">
-        <div class="card-body text-center">
-          <p class="mb-3">Please sign in to post a reply.</p>
-          <%= link_to "Sign In", new_user_session_path, class: "btn btn-primary me-2" %>
-          <%= link_to "Sign Up", new_user_registration_path, class: "btn btn-outline-primary" %>
-        </div>
-      </div>
-    <% end %>
-  </div>
-
-  <!-- Sidebar -->
-  <div class="col-lg-4">
-    <div class="card shadow-sm">
-      <div class="card-header bg-dark text-white">
-        <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i>Discussion Info</h6>
-      </div>
-      <div class="card-body">
-        <div class="mb-3">
-          <strong>Channel:</strong>
-          <%= link_to @channel.name, channel_path(@channel), 
-              class: "text-decoration-none ms-2" %>
-        </div>
-        <div class="mb-3">
-          <strong>Author:</strong>
-          <span class="ms-2"><%= @discussion.user.display_name %></span>
-        </div>
-        <div class="mb-3">
-          <strong>Created:</strong>
-          <span class="ms-2"><%= @discussion.created_at.strftime("%B %d, %Y at %I:%M %p") %></span>
-        </div>
-        <div class="mb-0">
-          <strong>Replies:</strong>
-          <span class="ms-2"><%= @discussion.replies_count %></span>
-        </div>
-      </div>
     </div>
   </div>
+
+  <%= render 'sidebar' %>
 </div>
+
+<style>
+.discussion-content {
+  font-size: 1.1rem;
+  line-height: 1.8;
+}
+
+.discussion-content p {
+  margin-bottom: 1.5rem;
+}
+
+.discussion-content h1,
+.discussion-content h2,
+.discussion-content h3,
+.discussion-content h4 {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.discussion-content pre {
+  border-radius: 8px;
+  margin: 1.5rem 0;
+}
+
+.discussion-content blockquote {
+  border-left: 4px solid #3b82f6;
+  padding-left: 1rem;
+  color: #4a5568;
+  margin: 1.5rem 0;
+}
+
+.card {
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.dropdown-content {
+  border-radius: 8px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.tag {
+  border-radius: 20px;
+}
+</style>

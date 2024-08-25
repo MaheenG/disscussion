@@ -3,20 +3,22 @@ class Ability
 
   def initialize(user)
     user ||= User.new # guest user (not logged in)
-
-    if user.admin?
+    
+    if user.has_role? :admin
       can :manage, :all
-    elsif user.moderator?
-      can :read, :all
-      can [:create, :update, :destroy], Discussion
-      can [:create, :update, :destroy], Reply
-      can :moderate, [Discussion, Reply]
-    elsif user.member?
-      can :read, :all
-      can [:create, :update, :destroy], Discussion, user: user
-      can [:create, :update, :destroy], Reply, user: user
     else
-      can :read, [Channel, Discussion, Reply]
+      # Guest user abilities
+      can :read, [Discussion, Channel, Reply]
+      
+      if user.persisted? # Logged in user
+        # Discussion abilities
+        can :create, Discussion
+        can [:update, :destroy], Discussion, user_id: user.id
+        
+        # Reply abilities
+        can :create, Reply
+        can [:update, :destroy], Reply, user_id: user.id
+      end
     end
   end
 end

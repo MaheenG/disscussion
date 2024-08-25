@@ -1,0 +1,74 @@
+<div class="column is-3 is-offset-1">
+  <div class="card">
+    <div class="card-content">
+      <div class="level mb-5">
+        <div class="level-left">
+          <h3 class="title is-5">Channels</h3>
+        </div>
+        <% if has_role?(:admin) %>
+          <div class="level-right">
+            <%= link_to new_channel_path, class:'button is-info is-small is-rounded' do %>
+              <span class="icon">
+                <i class="fas fa-plus"></i>
+              </span>
+              <span>New</span>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="menu">
+        <ul class="menu-list">
+          <li>
+            <%= link_to root_path, class: "is-active" do %>
+              <span class="icon"><i class="fas fa-hashtag"></i></span>
+              <span>All Channels</span>
+              <span class="tag is-info is-light is-rounded ml-2"><%= Discussion.count %></span>
+            <% end %>
+          </li>
+          <% @channels.each do |c| %>
+            <li>
+              <%= link_to c do %>
+                <span class="icon"><i class="fas fa-hashtag"></i></span>
+                <span><%= c.channel %></span>
+                <span class="tag is-light is-rounded ml-2"><%= c.discussions.count %></span>
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mt-4">
+    <div class="card-content">
+      <h4 class="title is-6">About Discussions</h4>
+      <p class="has-text-grey">Join the conversation! Select a channel to start discussing or create your own discussion.</p>
+    </div>
+  </div>
+</div>
+
+<style>
+.menu-list a {
+  border-radius: 8px;
+  margin-bottom: 0.25rem;
+  transition: background-color 0.2s ease;
+}
+
+.menu-list a:hover {
+  background-color: #f5f5f5;
+}
+
+.menu-list a.is-active {
+  background-color: #3b82f6;
+}
+
+.menu-list a.is-active:hover {
+  background-color: #2563eb;
+}
+
+.card {
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+</style>

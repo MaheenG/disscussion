@@ -1,25 +1,13 @@
 class Channel < ApplicationRecord
+  has_many :discussions
+  has_many :users, through: :discussions
+  resourcify
+
   extend FriendlyId
-  friendly_id :name, use: :slugged
+  friendly_id :channel, use: [:slugged, :finders]
 
-  has_many :discussions, dependent: :destroy
-  has_many :replies, through: :discussions
-
-  validates :name, presence: true, uniqueness: true
-  validates :description, presence: true
-  validates :color, presence: true, format: { with: /\A#[0-9A-Fa-f]{6}\z/ }
-
-  scope :ordered, -> { order(:name) }
-
-  def discussions_count
-    discussions.count
+  def should_generate_new_friendly_id?
+    channel_changed?
   end
 
-  def replies_count
-    replies.count
-  end
-
-  def latest_discussion
-    discussions.order(created_at: :desc).first
-  end
 end

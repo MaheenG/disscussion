@@ -1,10 +1,5 @@
 {
-  "name": "myapp",
-  "version": "1.0.0",
-  "main": "index.js",
-  "author": "MaheenGitHub <maheen19pgc@gmail.com>",
-  "license": "MIT",
-  "dependencies": {
-    "bulma": "^1.0.4"
-  }
+  "name": "discussions",
+  "private": true,
+  "dependencies": {}
 }

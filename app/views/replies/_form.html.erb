@@ -1,0 +1,59 @@
+<div class="reply-form">
+  <%= simple_form_for([@discussion, @discussion.replies.build], remote: true, html: { id: 'new_reply', class: 'reply-form' }) do |f| %>
+    <div class="field">
+      <div class="control">
+        <%= f.input :reply, 
+            label: false,
+            input_html: { 
+              class: 'textarea',
+              rows: 4,
+              placeholder: 'Write your reply here... You can use Markdown for formatting.'
+            },
+            wrapper: false %>
+      </div>
+      <p class="help">
+        <span class="icon-text">
+          <span class="icon">
+            <i class="fas fa-markdown"></i>
+          </span>
+          <span>Markdown supported</span>
+        </span>
+      </p>
+    </div>
+
+    <div class="field mt-4">
+      <div class="control">
+        <%= f.button :submit, class: 'button is-info is-medium' do %>
+          <span class="icon">
+            <i class="fas fa-paper-plane"></i>
+          </span>
+          <span>Post Reply</span>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<style>
+.reply-form textarea {
+  border-radius: 8px;
+  border: 2px solid #e2e8f0;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  resize: vertical;
+  min-height: 120px;
+}
+
+.reply-form textarea:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.2);
+}
+
+.reply-form .button {
+  border-radius: 8px;
+  transition: transform 0.2s ease;
+}
+
+.reply-form .button:hover {
+  transform: translateY(-1px);
+}
+</style>

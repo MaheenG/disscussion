@@ -1,85 +1,74 @@
 class DiscussionsController < ApplicationController
-  before_action :set_channel, except: [:index]
+  before_action :authenticate_user!, except: [:index, :show]
   before_action :set_discussion, only: [:show, :edit, :update, :destroy]
-  load_and_authorize_resource except: [:index, :show]
+  before_action :find_channels, only: [:index, :show, :new, :edit, :create]
+  load_and_authorize_resource except: [:index]
 
+  # GET /discussions
+  # GET /discussions.json
   def index
-  @channels = Channel.order(:name)  
-  if params[:channel_slug]
-    @channel = Channel.friendly.find(params[:channel_slug])
-    @discussions = @channel.discussions.includes(:user, :replies)
-                          .ordered
-                          .page(params[:page])
-                          .per(20)
-  else
-    @discussions = Discussion.includes(:user, :channel, :replies)
-                             .ordered
-                             .page(params[:page])
-                             .per(20)
+    @discussions = Discussion.includes(:user, :channel)
+                           .order(created_at: :desc)
+    @discussions = @discussions.accessible_by(current_ability)
   end
-end
 
-
-
-
+  # GET /discussions/1
+  # GET /discussions/1.json
   def show
+    @replies = @discussion.replies.includes(:user).order(created_at: :asc)
     @reply = Reply.new
-    @replies = @discussion.replies
-                         .includes(:user)
-                         .ordered
-                         .page(params[:page])
-                         .per(10)
   end
 
+  # GET /discussions/new
   def new
-    @discussion = @channel.discussions.build
+    @discussion = Discussion.new
   end
 
+  # GET /discussions/1/edit
+  def edit
+  end
+
+  # POST /discussions
+  # POST /discussions.json
   def create
-    @discussion = @channel.discussions.build(discussion_params)
-    @discussion.user = current_user
+    @discussion = current_user.discussions.build(discussion_params)
 
     if @discussion.save
-      redirect_to channel_discussion_path(@channel, @discussion), 
-                  notice: 'Discussion was successfully created.'
+      redirect_to @discussion, notice: 'Discussion was successfully created.'
     else
       render :new
     end
   end
 
-  def edit
-  end
-
+  # PATCH/PUT /discussions/1
+  # PATCH/PUT /discussions/1.json
   def update
     if @discussion.update(discussion_params)
-      redirect_to channel_discussion_path(@channel, @discussion), 
-                  notice: 'Discussion was successfully updated.'
+      redirect_to @discussion, notice: 'Discussion was successfully updated.'
     else
       render :edit
     end
   end
 
+  # DELETE /discussions/1
+  # DELETE /discussions/1.json
   def destroy
     @discussion.destroy
-    redirect_to channel_path(@channel), 
-                notice: 'Discussion was successfully deleted.'
+    redirect_to discussions_url, notice: 'Discussion was successfully deleted.'
   end
 
   private
+    # Use callbacks to share common setup or constraints between actions.
+    def set_discussion
+      @discussion = Discussion.friendly.find(params[:id])
+    end
 
-  def set_channel
-    @channel = Channel.friendly.find(params[:channel_slug]) if params[:channel_slug]
-  end
+    def find_channels
+      @channels = Channel.all.order('created_at desc')
+    end
 
-  def set_discussion
-    @discussion = if @channel
-                    @channel.discussions.friendly.find(params[:slug])
-                  else
-                    Discussion.friendly.find(params[:id])
-                  end
-  end
-
-  def discussion_params
-    params.require(:discussion).permit(:title, :content, :pinned)
-  end
+    # Never trust parameters from the scary internet, only allow the white list through.
+    def discussion_params
+      params.require(:discussion).permit(:title, :content, :channel_id)
+    end
 end
