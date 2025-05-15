@@ -1,0 +1,19 @@
+#<!-- app/views/home/index.html.erb -->
+<h1>Discussion Forum</h1>
+
+<% @channels.each do |channel| %>
+  <div class="channel">
+    <h2><%= link_to channel.name, channel_path(channel) %></h2>
+    <p><%= channel.description %></p>
+    
+    <ul>
+      <% channel.discussions.each do |discussion| %>
+        <li>
+          <a href="<%= discussion_path(discussion) %>">
+            <%= discussion.title %> by <%= discussion.user.username %>
+          </a>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>

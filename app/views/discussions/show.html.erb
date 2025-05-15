@@ -1,0 +1,27 @@
+<h2><%= @discussion.title %></h2>
+<p>by <%= @discussion.user.username %> in <%= @discussion.channel.name %></p>
+
+<div class="discussion-body">
+  <!-- Markdown rendering -->
+  <%= markdown(@discussion.content) %>
+</div>
+
+<hr>
+
+<h3>Replies</h3>
+<div id="replies">
+  <% @discussion.replies.each do |reply| %>
+    <div class="reply">
+      <p><strong><%= reply.user.username %>:</strong></p>
+      <%= markdown(reply.content) %>
+    </div>
+  <% end %>
+</div>
+
+<!-- AJAX Reply Form -->
+<h4>Add a Reply</h4>
+<form id="new-reply-form" action="/replies" method="post" data-remote="true">
+  <textarea name="content" rows="5" required></textarea><br>
+  <input type="hidden" name="discussion_id" value="<%= @discussion.id %>">
+  <button type="submit">Reply</button>
+</form>

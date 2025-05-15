@@ -1,0 +1,17 @@
+<h2>Start a New Discussion</h2>
+<form action="/discussions" method="post">
+  <input type="text" name="title" placeholder="Discussion Title" required><br>
+  
+  <select name="channel_id">
+    <% @channels.each do |channel| %>
+      <option value="<%= channel.id %>"><%= channel.name %></option>
+    <% end %>
+  </select><br>
+
+  <!-- Markdown enabled textarea -->
+  <textarea name="content" id="markdown-content" rows="10" placeholder="Your content in Markdown"></textarea><br>
+
+  <button type="submit">Post</button>
+</form>
+
+<!-- Optional: Include a markdown editor JS lib later -->
