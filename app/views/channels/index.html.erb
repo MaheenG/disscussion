@@ -1,0 +1,14 @@
+<h1>Channels</h1>
+
+<% if @channels.any? %>
+  <ul>
+    <% @channels.each do |channel| %>
+      <li>
+        <%= link_to channel.name, channel_path(channel.slug) %><br>
+        <small><%= channel.description %></small>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>No channels available.</p>
+<% end %>

@@ -6,8 +6,22 @@
 </div>
 
 <div class="mb-4">
-  <% if @channel %>
-    <%= link_to "New Discussion", new_channel_discussion_path(@channel.slug), class: "btn btn-primary" %>
+  <% if user_signed_in? && @channels.any? %>
+    <div class="dropdown">
+      <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fas fa-plus me-1"></i> New Discussion
+      </button>
+      <ul class="dropdown-menu">
+        <% @channels.each do |channel| %>
+          <li>
+            <%= link_to new_channel_discussion_path(channel), class: "dropdown-item" do %>
+              <span class="badge me-2" style="background-color: <%= channel.color %>;">&nbsp;</span>
+              <%= channel.name %>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
   <% end %>
 </div>
 

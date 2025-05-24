@@ -1,5 +1,5 @@
 class HomeController < ApplicationController
-  # Authenticate for all except index and show
+
   before_action :authenticate_user!, except: [:index, :show]
 
   def index
@@ -13,7 +13,6 @@ class HomeController < ApplicationController
   end
 
   def show
-    # Example show action - you can customize this
-    # For example, show a particular channel or info page
+    
   end
 end

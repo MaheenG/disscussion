@@ -3,8 +3,8 @@ class DiscussionsController < ApplicationController
   before_action :set_discussion, only: [:show, :edit, :update, :destroy]
   load_and_authorize_resource except: [:index, :show]
 
-  # Global index: show all discussions across all channels
   def index
+  @channels = Channel.order(:name)  
   if params[:channel_slug]
     @channel = Channel.friendly.find(params[:channel_slug])
     @discussions = @channel.discussions.includes(:user, :replies)
@@ -20,7 +20,8 @@ class DiscussionsController < ApplicationController
 end
 
 
-  # Show a single discussion scoped by channel if present
+
+
   def show
     @reply = Reply.new
     @replies = @discussion.replies
@@ -30,12 +31,10 @@ end
                          .per(10)
   end
 
-  # New discussion in a specific channel
   def new
     @discussion = @channel.discussions.build
   end
 
-  # Create discussion scoped to channel
   def create
     @discussion = @channel.discussions.build(discussion_params)
     @discussion.user = current_user
@@ -48,11 +47,9 @@ end
     end
   end
 
-  # Edit discussion scoped to channel
   def edit
   end
 
-  # Update discussion scoped to channel
   def update
     if @discussion.update(discussion_params)
       redirect_to channel_discussion_path(@channel, @discussion), 
@@ -62,7 +59,6 @@ end
     end
   end
 
-  # Delete discussion scoped to channel
   def destroy
     @discussion.destroy
     redirect_to channel_path(@channel), 
@@ -71,12 +67,10 @@ end
 
   private
 
-  # Find channel if present (for nested routes)
   def set_channel
     @channel = Channel.friendly.find(params[:channel_slug]) if params[:channel_slug]
   end
 
-  # Find discussion scoped to channel if channel exists, otherwise global find
   def set_discussion
     @discussion = if @channel
                     @channel.discussions.friendly.find(params[:slug])

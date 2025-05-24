@@ -2,10 +2,14 @@
   <!-- Main Content -->
   <div class="col-lg-8">
     <div class="d-flex justify-content-between align-items-center mb-4">
-      <h1 class="h3 mb-0">
-        <i class="fas fa-comments text-primary me-2"></i>
-        Recent Discussions
-      </h1>
+      <div class="d-flex align-items-center">
+        <h1 class="h3 mb-0 me-3">
+          <i class="fas fa-comments text-primary me-2"></i>
+          Recent Discussions
+        </h1>
+        <%= link_to 'View All Channels', channels_path, class: 'btn btn-outline-secondary btn-sm' %>
+      </div>
+
       <% if user_signed_in? %>
         <div class="dropdown">
           <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
@@ -69,15 +73,14 @@
         <i class="fas fa-comments fa-3x text-muted mb-3"></i>
         <h3 class="text-muted">No discussions yet</h3>
         <p class="text-muted">Be the first to start a conversation!</p>
-        <% if user_signed_in? %>
-          <%= link_to "Start Discussion", new_channel_discussion_path(@channels.first), 
-              class: "btn btn-primary" if @channels.any? %>
+        <% if user_signed_in? && @channels.any? %>
+          <%= link_to "Start Discussion", new_channel_discussion_path(@channels.first), class: "btn btn-primary" %>
         <% end %>
       </div>
     <% end %>
   </div>
 
-    <!-- Sidebar -->
+  <!-- Sidebar -->
   <div class="col-lg-4">
     <%= render 'shared/sidebar' %>
   </div>

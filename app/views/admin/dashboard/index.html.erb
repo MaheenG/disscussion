@@ -1,10 +1,11 @@
 <h2>Admin Dashboard</h2>
+
 <h3>All Discussions</h3>
 <% @discussions.each do |d| %>
   <div class="admin-discussion">
     <p><%= d.title %> by <%= d.user.username %></p>
-    <%= link_to "Edit", edit_discussion_path(d) %> |
-    <%= link_to "Delete", discussion_path(d), method: :delete, data: { confirm: "Are you sure?" } %>
+    <%= link_to "Edit", edit_admin_discussion_path(d) %> |
+    <%= link_to "Delete", admin_discussion_path(d), method: :delete, data: { confirm: "Are you sure?" } %>
   </div>
 <% end %>
 
@@ -12,6 +13,6 @@
 <% @replies.each do |r| %>
   <div class="admin-reply">
     <p><%= r.content %> by <%= r.user.username %></p>
-    <%= link_to "Delete", reply_path(r), method: :delete, data: { confirm: "Are you sure?" } %>
+    <%= link_to "Delete", admin_reply_path(r), method: :delete, data: { confirm: "Are you sure?" } %>
   </div>
 <% end %>
