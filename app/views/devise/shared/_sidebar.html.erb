@@ -1,0 +1,51 @@
+<!-- Forum Stats -->
+<div class="card shadow-sm mb-4">
+  <div class="card-header bg-primary text-white">
+    <h6 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Forum Stats</h6>
+  </div>
+  <div class="card-body">
+    <div class="row text-center">
+      <div class="col-4">
+        <div class="h4 text-primary mb-0"><%= @total_discussions %></div>
+        <small class="text-muted">Discussions</small>
+      </div>
+      <div class="col-4">
+        <div class="h4 text-success mb-0"><%= @total_replies %></div>
+        <small class="text-muted">Replies</small>
+      </div>
+      <div class="col-4">
+        <div class="h4 text-info mb-0"><%= @total_users %></div>
+        <small class="text-muted">Members</small>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Channels -->
+<div class="card shadow-sm">
+  <div class="card-header bg-dark text-white">
+    <h6 class="mb-0"><i class="fas fa-list me-2"></i>Channels</h6>
+  </div>
+  <div class="card-body p-0">
+    <% @channels.each_with_index do |channel, index| %>
+      <div class="p-3 <%= 'border-bottom' unless index == @channels.length - 1 %>">
+        <%= link_to channel_path(channel), class: "text-decoration-none" do %>
+          <div class="d-flex align-items-center">
+            <span class="badge me-3" style="background-color: <%= channel.color %>; width: 20px; height: 20px;">&nbsp;</span>
+            <div class="flex-grow-1">
+              <h6 class="mb-1 text-dark"><%= channel.name %></h6>
+              <small class="text-muted"><%= channel.description %></small>
+              <div class="mt-1">
+                <small class="text-muted">
+                  <i class="fas fa-comments me-1"></i><%= channel.discussions_count %>
+                  <span class="mx-2">•</span>
+                  <i class="fas fa-reply me-1"></i><%= channel.replies_count %>
+                </small>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>

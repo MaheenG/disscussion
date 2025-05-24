@@ -1,11 +1,17 @@
 class ApplicationController < ActionController::Base
-  helper_method :current_user
+  protect_from_forgery with: :exception
 
-  def current_user
-    @current_user ||= User.find_by(id: session[:user_id]) if session[:user_id]
+  before_action :authenticate_user!, unless: :devise_controller?
+  before_action :configure_permitted_parameters, if: :devise_controller?
+
+  rescue_from CanCan::AccessDenied do |exception|
+    redirect_to root_path, alert: exception.message
   end
 
-  def require_login
-    redirect_to login_path unless current_user
+  protected
+
+  def configure_permitted_parameters
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:first_name, :last_name, :username])
+    devise_parameter_sanitizer.permit(:account_update, keys: [:first_name, :last_name, :username, :avatar])
   end
 end

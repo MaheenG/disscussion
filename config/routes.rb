@@ -1,20 +1,36 @@
 Rails.application.routes.draw do
+  devise_for :users, controllers: {
+    registrations: 'users/registrations',
+    sessions: 'users/sessions'
+  }
+
   root 'home#index'
-  devise_for :users
-  get "welcome/index"
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
-  get "up" => "rails/health#show", as: :rails_health_check
+  # Nested discussions inside channels
+  resources :channels, param: :slug do
+    # All discussion actions except :index, which is global below
+    resources :discussions, param: :slug, except: [:index] do
+      resources :replies, except: [:show, :index]
+    end
+  end
 
-  # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
-  # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
-  # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
+  # Global discussions index (shows discussions from all channels)
+  resources :discussions, only: [:index]
 
-  # Defines the root path route ("/")
-  # root "posts#index"
-  #root "welcome#index"
-  #root to: "home#index"
+  namespace :admin do
+    root 'dashboard#index'
+    resources :users
+    resources :channels
+    resources :discussions
+    resources :replies
+  end
 
+  # API routes for AJAX calls
+  namespace :api do
+    namespace :v1 do
+      resources :discussions do
+        resources :replies
+      end
+    end
+  end
 end

@@ -1,47 +1,21 @@
 class ChannelsController < ApplicationController
+  before_action :set_channel, only: [:show]
+
   def index
-    @channels = Channel.all
+    @channels = Channel.ordered
   end
 
   def show
-    @channel = Channel.find(params[:id])
-  end
-
-  def new
-    @channel = Channel.new
-  end
-
-  def create
-    @channel = Channel.new(channel_params)
-    if @channel.save
-      redirect_to @channel
-    else
-      render :new
-    end
-  end
-
-  def edit
-    @channel = Channel.find(params[:id])
-  end
-
-  def update
-    @channel = Channel.find(params[:id])
-    if @channel.update(channel_params)
-      redirect_to @channel
-    else
-      render :edit
-    end
-  end
-
-  def destroy
-    @channel = Channel.find(params[:id])
-    @channel.destroy
-    redirect_to channels_path
+    @discussions = @channel.discussions
+                          .includes(:user, :replies)
+                          .pinned_first
+                          .page(params[:page])
+                          .per(20)
   end
 
   private
 
-  def channel_params
-    params.require(:channel).permit(:name, :description)
+  def set_channel
+    @channel = Channel.friendly.find(params[:slug])
   end
 end

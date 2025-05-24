@@ -1,6 +1,8 @@
 source "https://rubygems.org"
 gem 'devise'
-gem 'pundit'                   # Instead of rolify + cancancan
+#gem 'pundit'    
+gem 'cancancan'
+               # Instead of rolify + cancancan
 gem 'redcarpet'
 gem 'rouge'                    # Instead of coderay
 gem 'friendly_id'
@@ -8,6 +10,8 @@ gem 'jquery-rails'            # If you plan to use jQuery
 gem 'simple_form'             # Optional, only if you're using it
 gem 'gravatar_image_tag'      # Optional
 gem 'sass-rails', '>= 6'
+gem 'rack-cors'
+gem 'kaminari'
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 8.0.2"

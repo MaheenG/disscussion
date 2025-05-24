@@ -1,17 +1,59 @@
-<h2>Start a New Discussion</h2>
-<form action="/discussions" method="post">
-  <input type="text" name="title" placeholder="Discussion Title" required><br>
-  
-  <select name="channel_id">
-    <% @channels.each do |channel| %>
-      <option value="<%= channel.id %>"><%= channel.name %></option>
-    <% end %>
-  </select><br>
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="card shadow-sm">
+      <div class="card-header bg-white">
+        <h4 class="mb-0">
+          <i class="fas fa-plus me-2"></i>
+          New Discussion in 
+          <span class="badge ms-1" style="background-color: <%= @channel.color %>;">
+            <%= @channel.name %>
+          </span>
+        </h4>
+      </div>
+      <div class="card-body">
+        <%= form_with model: [@channel, @discussion], local: true do |form| %>
+          <% if @discussion.errors.any? %>
+            <div class="alert alert-danger">
+              <h6>Please fix the following errors:</h6>
+              <ul class="mb-0">
+                <% @discussion.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
 
-  <!-- Markdown enabled textarea -->
-  <textarea name="content" id="markdown-content" rows="10" placeholder="Your content in Markdown"></textarea><br>
+          <div class="mb-3">
+            <%= form.label :title, class: "form-label" %>
+            <%= form.text_field :title, class: "form-control", 
+                placeholder: "Enter a descriptive title for your discussion" %>
+          </div>
 
-  <button type="submit">Post</button>
-</form>
+          <div class="mb-3">
+            <%= form.label :content, class: "form-label" %>
+            <%= form.text_area :content, class: "form-control", rows: 12, 
+                placeholder: "Write your discussion content here... (Markdown supported)" %>
+            <div class="form-text">
+              <i class="fab fa-markdown me-1"></i>
+              Markdown is supported. You can use **bold**, *italic*, `code blocks`, lists, and more.
+            </div>
+          </div>
 
-<!-- Optional: Include a markdown editor JS lib later -->
+          <% if current_user.admin? || current_user.moderator? %>
+            <div class="mb-3">
+              <div class="form-check">
+                <%= form.check_box :pinned, class: "form-check-input" %>
+                <%= form.label :pinned, "Pin this discussion", class: "form-check-label" %>
+              </div>
+            </div>
+          <% end %>
+
+          <div class="d-flex justify-content-between">
+            <%= link_to "Cancel", channel_path(@channel), class: "btn btn-secondary" %>
+            <%= form.submit "Create Discussion", class: "btn btn-primary" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

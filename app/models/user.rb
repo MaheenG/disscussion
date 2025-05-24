@@ -1,34 +1,61 @@
+require 'devise'
+
 class User < ApplicationRecord
-  # Devise modules
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable
+         :recoverable, :rememberable, :validatable,
+         :confirmable
 
-  # Associations
-  has_many :discussions
-  has_many :replies
-  has_many :admin_permissions, foreign_key: :admin_id
+  # Manual role implementation instead of enum
+  ROLE_MEMBER = 0
+  ROLE_MODERATOR = 1
+  ROLE_ADMIN = 2
 
-  # Constants for roles
-  ROLE_USER  = 0
-  ROLE_ADMIN = 1
+  ROLES = {
+    member: ROLE_MEMBER,
+    moderator: ROLE_MODERATOR,
+    admin: ROLE_ADMIN
+  }.freeze
 
-  # Set default role after initialization
-  after_initialize :set_default_role, if: :new_record?
+  validates :role, presence: true, inclusion: { in: ROLES.values }
 
-  def set_default_role
-    self.role ||= ROLE_USER
+  has_many :discussions, dependent: :destroy
+  has_many :replies, dependent: :destroy
+  has_one_attached :avatar
+
+  validates :first_name, :last_name, presence: true
+  validates :username, presence: true, uniqueness: true, 
+            format: { with: /\A[a-zA-Z0-9_]+\z/, message: "can only contain letters, numbers, and underscores" }
+
+  before_validation :set_default_role, on: :create
+
+  def full_name
+    "#{first_name} #{last_name}"
   end
 
-  # Role check methods
-  def admin?
+  def display_name
+    username.presence || full_name
+  end
+
+  # Role helper methods
+  def role_name
+    ROLES.key(role)
+  end
+
+  def role_member?
+    role == ROLE_MEMBER
+  end
+
+  def role_moderator?
+    role == ROLE_MODERATOR
+  end
+
+  def role_admin?
     role == ROLE_ADMIN
   end
 
-  def user?
-    role == ROLE_USER
-  end
+  private
 
-  # Optional scopes
-  scope :admins, -> { where(role: ROLE_ADMIN) }
-  scope :users,  -> { where(role: ROLE_USER) }
+  def set_default_role
+    self.role ||= ROLE_MEMBER
+  end
 end
