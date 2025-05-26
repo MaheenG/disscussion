@@ -1,34 +1,37 @@
 class RepliesController < ApplicationController
-  before_action :set_channel_and_discussion
-  before_action :set_reply, only: [:show, :edit, :update, :destroy]
-  load_and_authorize_resource
+  before_action :authenticate_user!
+  before_action :set_discussion
+  before_action :set_reply, only: [:edit, :update, :destroy]
 
   def create
-    @reply = @discussion.replies.build(reply_params)
+    @reply = @discussion.replies.new(reply_params)
     @reply.user = current_user
 
     respond_to do |format|
       if @reply.save
-        format.html { redirect_to channel_discussion_path(@channel, @discussion), notice: 'Reply was successfully created.' }
-        format.json { render json: { status: 'success', reply: render_to_string(partial: 'replies/reply', locals: { reply: @reply }) } }
+        format.html { redirect_to @discussion, notice: 'Reply was successfully created.' }
+        format.js
       else
-        format.html { redirect_to channel_discussion_path(@channel, @discussion), alert: 'There was an error creating your reply.' }
-        format.json { render json: { status: 'error', errors: @reply.errors.full_messages } }
+        format.html { redirect_to @discussion, alert: 'Error creating reply.' }
+        format.js
       end
     end
   end
 
   def edit
+    respond_to do |format|
+      format.js
+    end
   end
 
   def update
     respond_to do |format|
       if @reply.update(reply_params)
-        format.html { redirect_to channel_discussion_path(@channel, @discussion), notice: 'Reply was successfully updated.' }
-        format.json { render json: { status: 'success', reply: render_to_string(partial: 'replies/reply', locals: { reply: @reply }) } }
+        format.html { redirect_to @discussion, notice: 'Reply was successfully updated.' }
+        format.js
       else
-        format.html { render :edit }
-        format.json { render json: { status: 'error', errors: @reply.errors.full_messages } }
+        format.html { redirect_to @discussion, alert: 'Error updating reply.' }
+        format.js
       end
     end
   end
@@ -36,16 +39,15 @@ class RepliesController < ApplicationController
   def destroy
     @reply.destroy
     respond_to do |format|
-      format.html { redirect_to channel_discussion_path(@channel, @discussion), notice: 'Reply was successfully deleted.' }
-      format.json { render json: { status: 'success' } }
+      format.html { redirect_to @discussion, notice: 'Reply was successfully deleted.' }
+      format.js
     end
   end
 
   private
 
-  def set_channel_and_discussion
-    @channel = Channel.friendly.find(params[:channel_slug])
-    @discussion = @channel.discussions.friendly.find(params[:discussion_slug])
+  def set_discussion
+    @discussion = Discussion.find(params[:discussion_id])
   end
 
   def set_reply
@@ -53,6 +55,7 @@ class RepliesController < ApplicationController
   end
 
   def reply_params
-    params.require(:reply).permit(:content)
+    params.require(:reply).permit(:reply)
   end
 end
+

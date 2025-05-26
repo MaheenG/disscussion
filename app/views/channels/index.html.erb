@@ -1,14 +1,35 @@
-<h1>Channels</h1>
+<div class="min-h-screen bg-gray-100">
+  <div class="container mx-auto px-4 py-8">
+    <!-- Welcome Section -->
+    <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+      <h1 class="text-4xl font-bold text-gray-900 mb-4">Welcome to Our Discussion Forum</h1>
+      <p class="text-xl text-gray-600 mb-6">Join our community and participate in discussions across various channels.</p>
+      
+      <% if user_signed_in? %>
+        <%= link_to 'Start a Discussion', new_discussion_path, class: 'inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-200' %>
+      <% else %>
+        <%= link_to 'Join Now', new_user_registration_path, class: 'inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-200' %>
+      <% end %>
+    </div>
 
-<% if @channels.any? %>
-  <ul>
-    <% @channels.each do |channel| %>
-      <li>
-        <%= link_to channel.name, channel_path(channel.slug) %><br>
-        <small><%= channel.description %></small>
-      </li>
-    <% end %>
-  </ul>
-<% else %>
-  <p>No channels available.</p>
-<% end %>
+    <!-- Channels Section -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <% @channels.each do |channel| %>
+        <div class="bg-white rounded-lg shadow p-6">
+          <h2 class="text-xl font-semibold text-gray-900 mb-2"><%= channel.name %></h2>
+          <p class="text-gray-600 mb-4"><%= pluralize(channel.discussions.count, 'discussion') %></p>
+          
+          <div class="space-y-2">
+            <% channel.discussions.limit(3).each do |discussion| %>
+              <div class="border-l-4 border-blue-500 pl-3">
+                <%= link_to discussion.title, discussion_path(discussion), class: 'text-gray-700 hover:text-blue-600' %>
+              </div>
+            <% end %>
+          </div>
+
+          <%= link_to 'View Channel', channel_path(channel), class: 'mt-4 inline-block text-blue-600 hover:text-blue-800' %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,138 @@
+<div class="column is-8">
+  <div class="card mb-6">
+    <div class="card-content">
+      <h2 class="title is-3">Welcome to Discussions!</h2>
+      <p class="subtitle is-5">Join our community and start discussing topics that matter to you.</p>
+      <div class="content">
+        <p>Here's what you can do:</p>
+        <ul>
+          <li>Browse discussions by channel</li>
+          <li>Create your own discussions</li>
+          <li>Reply to existing discussions</li>
+          <li>Use Markdown formatting in your posts</li>
+        </ul>
+        <% unless user_signed_in? %>
+          <div class="buttons mt-5">
+            <%= link_to new_user_registration_path, class: "button is-primary is-medium" do %>
+              <span class="icon">
+                <i class="fas fa-user-plus"></i>
+              </span>
+              <span>Join the Community</span>
+            <% end %>
+            <%= link_to new_user_session_path, class: "button is-light is-medium" do %>
+              <span class="icon">
+                <i class="fas fa-sign-in-alt"></i>
+              </span>
+              <span>Sign In</span>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="level">
+    <div class="level-left">
+      <h3 class="title is-4 has-text-weight-bold mb-4">Latest Discussions</h3>
+    </div>
+    <div class="level-right">
+      <div class="select is-small">
+        <select>
+          <option>All Channels</option>
+          <% Channel.all.each do |channel| %>
+            <option><%= channel.channel %></option>
+          <% end %>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="discussions">
+    <% @discussions.each do |discussion| %>
+      <div class="card mb-4 discussion-card">
+        <div class="card-content">
+          <div class="columns is-mobile">
+            <div class="column is-narrow">
+              <%= gravatar_image_tag(discussion.user.email, class:'is-rounded', size: 48, alt: discussion.user.username) %>
+            </div>
+            <div class="column">
+              <div class="level is-mobile mb-1">
+                <div class="level-left">
+                  <%= link_to discussion, class: "has-text-dark" do %>
+                    <h3 class="title is-5 mb-2"><%= discussion.title %></h3>
+                  <% end %>
+                </div>
+                <% if discussion_author(discussion) || has_role?(:admin) %>
+                  <div class="level-right">
+                    <div class="dropdown is-right is-hoverable">
+                      <div class="dropdown-trigger">
+                        <button class="button is-light is-small" aria-controls="dropdown-menu">
+                          <span class="icon">
+                            <i class="fas fa-ellipsis-v"></i>
+                          </span>
+                        </button>
+                      </div>
+                      <div class="dropdown-menu" role="menu">
+                        <div class="dropdown-content">
+                          <%= link_to edit_discussion_path(discussion), class: 'dropdown-item' do %>
+                            <span class="icon"><i class="fas fa-edit"></i></span>
+                            <span>Edit</span>
+                          <% end %>
+                          <%= link_to discussion, method: :delete, data: { confirm: 'Are you sure?' }, class: "dropdown-item has-text-danger" do %>
+                            <span class="icon"><i class="fas fa-trash-alt"></i></span>
+                            <span>Delete</span>
+                          <% end %>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+
+              <div class="content">
+                <p class="has-text-grey"><%= truncate(strip_markdown(discussion.content), length: 140) %></p>
+                <div class="tags">
+                  <% if discussion.channel %>
+                    <%= link_to discussion.channel, class: "tag is-info is-light" do %>
+                      <span class="icon is-small"><i class="fas fa-hashtag"></i></span>
+                      <span><%= discussion.channel.channel %></span>
+                    <% end %>
+                  <% end %>
+                  <span class="tag is-light">
+                    <span class="icon is-small"><i class="fas fa-clock"></i></span>
+                    <span><%= time_ago_in_words(discussion.created_at) %> ago</span>
+                  </span>
+                  <span class="tag is-light">
+                    <span class="icon is-small"><i class="fas fa-user"></i></span>
+                    <span><%= discussion.user.username %></span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<style>
+.discussion-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 8px;
+}
+
+.discussion-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.tag {
+  border-radius: 20px;
+}
+
+.dropdown-content {
+  border-radius: 8px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+</style>

@@ -1,30 +1,21 @@
-class Admin::DashboardController < ApplicationController
-  def index
-    @stats = {
-      users: User.count,
-      channels: Channel.count,
-      discussions: Discussion.count,
-      replies: Reply.count
-    }
+module Admin
+  class DashboardController < ApplicationController
+    before_action :authenticate_user!
+    before_action :check_admin
 
-    @recent_users = User.order(created_at: :desc).limit(5)
-    @recent_discussions = Discussion.includes(:user, :channel).order(created_at: :desc).limit(5)
-
-    @discussions = Discussion.includes(:user).order(created_at: :desc).limit(10)
-
-    if @discussions.empty?
-      admin = User.find_by(role: 'admin') || User.first
-
-      default_channel = Channel.first || Channel.create(name: 'General')
-
-      default_discussion = Discussion.find_or_create_by(title: 'Welcome to the Forum', user: admin) do |d|
-        d.body = 'This is a default discussion created by the admin.'
-        d.channel = default_channel
-      end
-
-      @discussions = [default_discussion]
+    def index
+      @discussions = Discussion.all
+      @channels = Channel.all
+      @users = User.all
+      @replies = Reply.all
     end
 
-    @replies = Reply.includes(:user).all
+    private
+
+    def check_admin
+      unless current_user&.admin?
+        redirect_to root_path, alert: 'You are not authorized to access this area.'
+      end
+    end
   end
-end
+end 

@@ -1,0 +1,121 @@
+<div class="discussion-form">
+  <%= simple_form_for(@discussion) do |f| %>
+    <% if f.error_notification %>
+      <div class="notification is-danger is-light mb-5">
+        <button class="delete"></button>
+        <%= f.error_notification %>
+      </div>
+    <% end %>
+
+    <div class="field">
+      <div class="control">
+        <%= f.input :title, 
+            required: true, 
+            input_html: { 
+              class: 'input is-medium',
+              placeholder: 'Give your discussion a clear, descriptive title'
+            }, 
+            wrapper: false, 
+            label_html: { class: "label is-medium" } %>
+      </div>
+    </div>
+
+    <div class="field mt-5">
+      <div class="control">
+        <%= f.input :content, 
+            required: true, 
+            input_html: { 
+              class: 'textarea',
+              rows: 10,
+              placeholder: 'Write your discussion here... You can use Markdown for formatting.'
+            }, 
+            wrapper: false, 
+            label_html: { class: "label is-medium" } %>
+      </div>
+      <p class="help">
+        <span class="icon-text">
+          <span class="icon">
+            <i class="fas fa-markdown"></i>
+          </span>
+          <span>Markdown supported</span>
+        </span>
+      </p>
+    </div>
+
+    <div class="field mt-5">
+      <label class="label is-medium">Channel</label>
+      <div class="control has-icons-left">
+        <div class="select is-medium is-fullwidth">
+          <%= f.input_field :channel_id, 
+              collection: @channels.map { |c| [c.channel, c.id] }, 
+              prompt: "Select a channel for your discussion" %>
+        </div>
+        <span class="icon is-medium is-left">
+          <i class="fas fa-hashtag"></i>
+        </span>
+      </div>
+    </div>
+
+    <div class="field mt-5">
+      <div class="control">
+        <%= f.button :submit, class: "button is-info is-medium is-fullwidth" do %>
+          <span class="icon">
+            <i class="fas fa-paper-plane"></i>
+          </span>
+          <span>Publish Discussion</span>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<style>
+.discussion-form .input,
+.discussion-form .textarea,
+.discussion-form .select select {
+  border-radius: 8px;
+  border: 2px solid #e2e8f0;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.discussion-form .input:focus,
+.discussion-form .textarea:focus,
+.discussion-form .select select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.2);
+}
+
+.discussion-form .textarea {
+  min-height: 200px;
+  resize: vertical;
+}
+
+.discussion-form .button {
+  border-radius: 8px;
+  transition: transform 0.2s ease;
+}
+
+.discussion-form .button:hover {
+  transform: translateY(-1px);
+}
+
+.discussion-form .notification {
+  border-radius: 8px;
+}
+
+.discussion-form .help {
+  font-size: 0.9rem;
+  color: #64748b;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+    const $notification = $delete.parentNode;
+    $delete.addEventListener('click', () => {
+      $notification.parentNode.removeChild($notification);
+    });
+  });
+});
+</script>

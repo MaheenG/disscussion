@@ -1,18 +1,86 @@
-<h2>Admin Dashboard</h2>
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold mb-8">Admin Dashboard</h1>
 
-<h3>All Discussions</h3>
-<% @discussions.each do |d| %>
-  <div class="admin-discussion">
-    <p><%= d.title %> by <%= d.user.username %></p>
-    <%= link_to "Edit", edit_admin_discussion_path(d) %> |
-    <%= link_to "Delete", admin_discussion_path(d), method: :delete, data: { confirm: "Are you sure?" } %>
-  </div>
-<% end %>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <!-- Channels Section -->
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-xl font-semibold mb-4">Channels</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full">
+          <thead>
+            <tr class="border-b">
+              <th class="text-left py-2">Name</th>
+              <th class="text-left py-2">Discussions</th>
+              <th class="text-left py-2">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @channels.each do |channel| %>
+              <tr class="border-b">
+                <td class="py-2"><%= channel.name %></td>
+                <td class="py-2"><%= channel.discussions.count %></td>
+                <td class="py-2">
+                  <%= link_to 'Edit', edit_channel_path(channel), class: 'text-blue-600 hover:text-blue-800' %>
+                  <%= link_to 'Delete', channel_path(channel), method: :delete, data: { confirm: 'Are you sure?' }, class: 'text-red-600 hover:text-red-800 ml-2' %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-<h3>All Replies</h3>
-<% @replies.each do |r| %>
-  <div class="admin-reply">
-    <p><%= r.content %> by <%= r.user.username %></p>
-    <%= link_to "Delete", admin_reply_path(r), method: :delete, data: { confirm: "Are you sure?" } %>
+    <!-- Users Section -->
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-xl font-semibold mb-4">Users</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full">
+          <thead>
+            <tr class="border-b">
+              <th class="text-left py-2">Email</th>
+              <th class="text-left py-2">Role</th>
+              <th class="text-left py-2">Discussions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @users.each do |user| %>
+              <tr class="border-b">
+                <td class="py-2"><%= user.email %></td>
+                <td class="py-2"><%= user.admin? ? 'Admin' : 'User' %></td>
+                <td class="py-2"><%= user.discussions.count %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Recent Discussions -->
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-xl font-semibold mb-4">Recent Discussions</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full">
+          <thead>
+            <tr class="border-b">
+              <th class="text-left py-2">Title</th>
+              <th class="text-left py-2">Author</th>
+              <th class="text-left py-2">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @discussions.each do |discussion| %>
+              <tr class="border-b">
+                <td class="py-2"><%= discussion.title %></td>
+                <td class="py-2"><%= discussion.user.email %></td>
+                <td class="py-2">
+                  <%= link_to 'View', discussion_path(discussion), class: 'text-blue-600 hover:text-blue-800' %>
+                  <%= link_to 'Delete', discussion_path(discussion), method: :delete, data: { confirm: 'Are you sure?' }, class: 'text-red-600 hover:text-red-800 ml-2' %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
-<% end %>
+</div> 
