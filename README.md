@@ -1,90 +1,69 @@
-![Let's Build: With Ruby on Rails - Discussion Forum](https://i.imgur.com/GA9Azed.jpg)
+Task Division
+Submission 1: Core Functionality (70% of Tasks)
+•	Rationale: Submission 1 includes the setup, core features, and initial UI, forming the foundation of the discussion forum. This covers user authentication, channel and discussion management, replies, Markdown support, AJAX replies, admin controls, validations, prettier URLs, and basic styling. These tasks represent the bulk of the development effort, ensuring a locally functional application.
+•	Tasks: 
+o	Project Setup: 
+	Initialize RoR project with PostgreSQL, Git, and gems (devise, pundit, kramdown, rouge, friendly_id, pg_search).
+	Install Tailwind CSS.
+o	Database Models and Authentication: 
+	Create models: User (with role enum: user, admin), Channel, Discussion, Reply.
+	Set up Devise for user authentication and FriendlyId for discussion slugs.
+	Run migrations.
+o	Channels and Discussions: 
+	Implement ChannelsController (index, show, CRUD for admins).
+	Implement DiscussionsController (index, show, CRUD for users).
+	Use Pundit for authorization (users manage own discussions; admins manage all).
+	Create views for channels (list), discussions (list, show, forms).
+o	Replies System: 
+	Implement RepliesController (create action).
+	Set up nested routes for replies.
+	Create reply partial and form in discussion show page.
+o	Markdown and Syntax Highlighting: 
+	Add Kramdown for Markdown rendering (helper method).
+	Use Rouge for syntax highlighting (helper method for code blocks).
+	Update views to render Markdown and highlighted code.
+o	AJAX Replies: 
+	Modify RepliesController for AJAX responses.
+	Create JavaScript view (create.js.erb) to append replies dynamically.
+	Add JavaScript for asynchronous form submission.
+o	Admin Controls: 
+	Add admin actions in DiscussionsController and RepliesController (edit/delete any content).
+	Create Admin::DashboardController to list/manage discussions and replies.
+	Add admin-specific views/links.
+o	UI Styling: 
+	Style channels, discussions, replies, and admin dashboard with Tailwind CSS.
+	Add responsive navbar with role-based links (Home, Channels, Admin Dashboard, etc.).
+	Ensure mobile-friendly design.
+o	Validations and Prettier URLs: 
+	Add model validations (e.g., presence/uniqueness for User, Channel, Discussion, Reply).
+	Ensure FriendlyId generates SEO-friendly URLs (/discussions/:slug).
+	Implement flash messages for validation errors.
+o	Bug Fixing and Manual Testing: 
+	Manually test user flows (sign up, create/edit/delete discussions, post replies, admin management).
+	Fix UI, validation, and functionality issues.
+•	Deliverables: A locally running RoR application with user authentication, channel/discussion/reply management, Markdown support, AJAX replies, admin controls, and a styled UI.
+Submission 2: Testing, Deployment, and Documentation (30% of Tasks)
+•	Rationale: Submission 2 focuses on quality assurance, deployment, and final polish, which are critical but less code-intensive. This includes automated testing, production setup, deployment to Render, and documentation, building on the foundation from Submission 1.
+•	Tasks: 
+o	Automated Testing: 
+	Set up RSpec (rails g rspec:install).
+	Write tests for authentication (user/admin access), discussion CRUD, and reply creation (AJAX).
+	Run tests and fix failures.
+o	Deployment Preparation: 
+	Configure production environment (config/environments/production.rb).
+	Precompile assets (rails assets:precompile).
+	Test locally in production mode (RAILS_ENV=production rails s).
+	Set up Render with PostgreSQL.
+o	Deployment and Production Testing: 
+	Push code to GitHub and deploy to Render.
+	Set environment variables (e.g., DATABASE_URL, SECRET_KEY_BASE).
+	Run migrations on Render (render run rails db:migrate).
+	Test core features in production (user flows, admin controls, AJAX replies).
+	Fix deployment issues.
+o	Documentation and Final Touches: 
+	Write README.md (project description, setup, deployment, limitations).
+	Add a homepage (root 'channels#index') with a welcome message.
+	Perform final testing on the deployed app.
+	Make final commit and push to GitHub.
+•	Deliverables: A deployed, tested application on Render with documentation and a polished homepage.
 
-# Let's Build: With Ruby on Rails - Discussion Forum
-
-Continuing my long stent of Ruby on Rails builds is yet another build which focuses more on relationships in a real-world discussion forum application.
-
-The application on the outside looks a little bleak but I promise there is a lot going on under the hood of which you could extend to be something very feature rich. 
-
-Follow along with more videos on [YouTube](https://www.youtube.com/playlist?list=PL01nNIgQ4uxNkDZNMON-TrzDVNIk3cOz4) or my [original blog post](https://web-crunch.com/lets-build-with-ruby-on-rails-discussion-forum) and be sure to download the source code on this repo to both explore the application and refer to it as you build alongside me.
-
-If you enjoy these Let's Builds I can't thank you enough for tuning in. I hate asking for anything in return so only if you insist you can [buy my a coffee](https://buymeacoff.ee/webcrunch) to keep these going. Also, be sure to subscribe to my [YouTube channel](https://youtube.com/c/webcrunch) and [newsletter](https://web-crunch.com/subscribe) for automatic updates. 
-
-# Discussion Forum
-
-A modern discussion forum built with Ruby on Rails, featuring real-time updates, Markdown support, and administrative controls.
-
-## Features
-
-- User authentication with Devise
-- Channel-based discussions
-- Real-time replies with AJAX
-- Markdown support with syntax highlighting
-- Admin dashboard for content management
-- Mobile-responsive design with Tailwind CSS
-- SEO-friendly URLs with FriendlyId
-
-## Requirements
-
-- Ruby 3.0.0 or higher
-- Rails 7.0.0 or higher
-- PostgreSQL
-- Node.js 14+ and Yarn
-
-## Installation
-
-1. Clone the repository:
-```bash
-git clone [repository-url]
-cd discussion-forum
-```
-
-2. Install dependencies:
-```bash
-bundle install
-yarn install
-```
-
-3. Setup database:
-```bash
-rails db:create
-rails db:migrate
-rails db:seed
-```
-
-4. Start the server:
-```bash
-bin/dev
-```
-
-The application will be available at http://localhost:3000
-
-## Testing
-
-Run the test suite with:
-```bash
-bundle exec rspec
-```
-
-## Deployment
-
-This application is configured for deployment on Render.
-
-1. Create a new Web Service on Render
-2. Connect your GitHub repository
-3. Set the following environment variables:
-   - `RAILS_MASTER_KEY`
-   - `DATABASE_URL`
-   - `RAILS_ENV=production`
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE.md file for details 
