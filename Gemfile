@@ -43,7 +43,7 @@ gem 'cancancan', '~> 2.1', '>= 2.1.3'
 gem 'friendly_id', '~> 5.2', '>= 5.2.3'
 gem 'kramdown', '~> 2.3'
 gem 'kramdown-parser-gfm', '~> 1.1'
-gem 'rouge', '~> 3.26'
+gem 'rouge', '~> 4.5'
 gem 'coderay', '~> 1.1', '>= 1.1.2'
 
 # Search functionality
