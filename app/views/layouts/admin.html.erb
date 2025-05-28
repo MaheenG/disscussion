@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>✨ Admin Dashboard ✨</title>
+    <%= csrf_meta_tags %>
+    <%= stylesheet_link_tag "application", media: "all", 'data-turbolinks-track': "reload" %>
+    <%= stylesheet_link_tag "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" %>
+    <%= javascript_include_tag "application", 'data-turbolinks-track': "reload" %>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+  </head>
+
+  <body class="has-navbar-fixed-top">
+    <% if flash[:notice] %>
+      <div class="notification is-success global-notification">
+        <button class="delete"></button>
+        <p class="notice">✨ <%= notice %></p>
+      </div>
+    <% end %>
+    <% if flash[:alert] %>
+      <div class="notification is-danger global-notification">
+        <button class="delete"></button>
+        <p class="alert">⚠️ <%= alert %></p>
+      </div>
+    <% end %>
+    
+    <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <%= link_to admin_dashboard_path, class: "navbar-item" do %>
+          <h1 class="title is-5">
+            <span class="icon-text">
+              <span class="icon is-cute">
+                <i class="fas fa-crown"></i>
+              </span>
+              <span>✨ Admin Dashboard ✨</span>
+            </span>
+          </h1>
+        <% end %>
+      </div>
+
+      <div class="navbar-menu">
+        <div class="navbar-start">
+          <%= link_to admin_dashboard_path, class: "navbar-item #{'is-active' if current_page?(admin_dashboard_path)}" do %>
+            <span class="icon-text">
+              <span class="icon is-cute">
+                <i class="fas fa-home"></i>
+              </span>
+              <span>Dashboard 🏠</span>
+            </span>
+          <% end %>
+        </div>
+
+        <div class="navbar-end">
+          <%= link_to root_path, class: "navbar-item" do %>
+            <span class="icon-text">
+              <span class="icon is-cute">
+                <i class="fas fa-arrow-left"></i>
+              </span>
+              <span>Back to Site 🌍</span>
+            </span>
+          <% end %>
+          
+          <div class="navbar-item">
+            <div class="buttons">
+              <%= link_to destroy_user_session_path, method: :delete, class: "button is-light" do %>
+                <span class="icon-text">
+                  <span class="icon is-cute">
+                    <i class="fas fa-sign-out-alt"></i>
+                  </span>
+                  <span>Log Out 👋</span>
+                </span>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <section class="section" style="margin-top: 1rem;">
+      <div class="container">
+        <%= yield %>
+      </div>
+    </section>
+
+    <!-- Decorative Elements -->
+    <div class="decorative-circles">
+      <div class="circle circle-1"></div>
+      <div class="circle circle-2"></div>
+      <div class="circle circle-3"></div>
+    </div>
+
+    <!-- Emoji Decorations -->
+    <div class="emoji-decoration" style="top: 20%; right: 5%;">👑</div>
+    <div class="emoji-decoration" style="bottom: 15%; left: 8%;">⚡</div>
+    <div class="emoji-decoration" style="top: 40%; left: 3%;">✨</div>
+    <div class="emoji-decoration" style="bottom: 30%; right: 7%;">🎮</div>
+  </body>
+</html>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Notification close button functionality
+  (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+    const $notification = $delete.parentNode;
+    $delete.addEventListener('click', () => {
+      $notification.parentNode.removeChild($notification);
+    });
+  });
+});
+</script> 

@@ -1,0 +1,191 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="columns">
+    <!-- Sidebar -->
+    <div class="column is-3">
+      <aside class="menu box">
+        <p class="menu-label">
+          User Menu
+        </p>
+        <ul class="menu-list">
+          <li>
+            <%= link_to users_dashboard_path, class: "is-active" do %>
+              <span class="icon"><i class="fas fa-home"></i></span>
+              <span>My Dashboard</span>
+            <% end %>
+          </li>
+          <li>
+            <%= link_to discussions_path do %>
+              <span class="icon"><i class="fas fa-comments"></i></span>
+              <span>All Discussions</span>
+            <% end %>
+          </li>
+          <li>
+            <%= link_to new_discussion_path do %>
+              <span class="icon"><i class="fas fa-plus"></i></span>
+              <span>New Discussion</span>
+            <% end %>
+          </li>
+        </ul>
+      </aside>
+    </div>
+
+    <!-- Main Content -->
+    <div class="column is-9">
+      <!-- User Stats -->
+      <div class="columns is-multiline">
+        <div class="column is-6">
+          <div class="box has-text-centered">
+            <p class="heading">My Discussions</p>
+            <p class="title"><%= @my_discussions.count %></p>
+            <span class="icon has-text-info is-large">
+              <i class="fas fa-comments fa-2x"></i>
+            </span>
+          </div>
+        </div>
+
+        <div class="column is-6">
+          <div class="box has-text-centered">
+            <p class="heading">My Replies</p>
+            <p class="title"><%= @my_replies.count %></p>
+            <span class="icon has-text-success is-large">
+              <i class="fas fa-reply fa-2x"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- My Discussions -->
+      <div class="box mt-6">
+        <h2 class="title is-4 mb-4">
+          <span class="icon-text">
+            <span class="icon"><i class="fas fa-comments"></i></span>
+            <span>My Discussions</span>
+          </span>
+        </h2>
+
+        <% if @my_discussions.any? %>
+          <table class="table is-fullwidth">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Created</th>
+                <th>Replies</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @my_discussions.each do |discussion| %>
+                <tr>
+                  <td><%= link_to discussion.title, discussion_path(discussion), class: "has-text-info" %></td>
+                  <td><%= time_ago_in_words(discussion.created_at) %> ago</td>
+                  <td><%= discussion.replies.count %></td>
+                  <td>
+                    <div class="buttons are-small">
+                      <%= link_to edit_discussion_path(discussion), class: "button is-info is-light" do %>
+                        <span class="icon"><i class="fas fa-edit"></i></span>
+                      <% end %>
+                      <%= link_to discussion_path(discussion), 
+                          method: :delete,
+                          data: { confirm: 'Are you sure?' },
+                          class: "button is-danger is-light" do %>
+                        <span class="icon"><i class="fas fa-trash"></i></span>
+                      <% end %>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        <% else %>
+          <div class="notification is-info is-light">
+            <p>You haven't created any discussions yet. 
+              <%= link_to "Create your first discussion", new_discussion_path, class: "has-text-info" %>!</p>
+          </div>
+        <% end %>
+      </div>
+
+      <!-- My Recent Replies -->
+      <div class="box mt-6">
+        <h2 class="title is-4 mb-4">
+          <span class="icon-text">
+            <span class="icon"><i class="fas fa-reply"></i></span>
+            <span>My Recent Replies</span>
+          </span>
+        </h2>
+
+        <% if @my_replies.any? %>
+          <table class="table is-fullwidth">
+            <thead>
+              <tr>
+                <th>Reply</th>
+                <th>Discussion</th>
+                <th>Created</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @my_replies.order(created_at: :desc).limit(5).each do |reply| %>
+                <tr>
+                  <td><%= truncate(reply.reply, length: 100) %></td>
+                  <td><%= link_to reply.discussion.title, discussion_path(reply.discussion), class: "has-text-info" %></td>
+                  <td><%= time_ago_in_words(reply.created_at) %> ago</td>
+                  <td>
+                    <div class="buttons are-small">
+                      <%= link_to edit_discussion_reply_path(reply.discussion, reply), class: "button is-info is-light" do %>
+                        <span class="icon"><i class="fas fa-edit"></i></span>
+                      <% end %>
+                      <%= link_to discussion_reply_path(reply.discussion, reply), 
+                          method: :delete,
+                          data: { confirm: 'Are you sure?' },
+                          class: "button is-danger is-light" do %>
+                        <span class="icon"><i class="fas fa-trash"></i></span>
+                      <% end %>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        <% else %>
+          <div class="notification is-info is-light">
+            <p>You haven't replied to any discussions yet.</p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.menu-list a {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.menu-list a:hover {
+  background-color: #f5f5f5;
+}
+
+.menu-list a.is-active {
+  background-color: #3273dc;
+  color: white;
+}
+
+.box {
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.table {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.buttons.are-small .button {
+  margin-bottom: 0;
+}
+</style> 

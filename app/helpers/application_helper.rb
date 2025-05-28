@@ -1,6 +1,11 @@
 module ApplicationHelper
   def has_role?(role)
-    current_user && current_user.has_role?(role)
+    case role
+    when :admin
+      current_user&.admin?
+    else
+      false
+    end
   end
 
   def markdown(text)
@@ -54,5 +59,9 @@ module ApplicationHelper
     text = text.gsub(/\n{2,}/, "\n")
     
     text.strip
+  end
+
+  def discussion_author(discussion)
+    user_signed_in? && current_user.id == discussion.user_id
   end
 end

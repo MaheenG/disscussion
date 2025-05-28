@@ -13,4 +13,8 @@ class Reply < ApplicationRecord
   def should_generate_new_friendly_id?
     reply_changed? && !slug_changed?
   end
+
+  def can_modify?(user)
+    user && (user.admin? || user_id == user.id)
+  end
 end

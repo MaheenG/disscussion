@@ -6,6 +6,9 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
+# Ye file database ko initial data se populate krne k liye hai
+# Development aur testing k liye dummy data create krta hai
+
 # Create default channels
 Channel.create([
   { channel: 'General Discussion' },
@@ -15,20 +18,21 @@ Channel.create([
   { channel: 'Off-Topic' }
 ]) unless Channel.exists?
 
-# Create admin user
+# Admin user create krta hai - full access k sath
 admin = User.create!(
+  username: 'admin',
   email: 'admin@example.com',
   password: 'password123',
   password_confirmation: 'password123',
   admin: true
 )
 
-# Create regular user
+# Normal user create krta hai - limited access k sath
 user = User.create!(
+  username: 'user',
   email: 'user@example.com',
   password: 'password123',
-  password_confirmation: 'password123',
-  admin: false
+  password_confirmation: 'password123'
 )
 
 # Create channels
@@ -71,6 +75,24 @@ channels.each do |channel|
     end
   end
 end
+
+# Default channel create krta hai discussions k liye
+channel = Channel.create!(name: 'General Discussion')
+
+# Sample discussion create krta hai
+discussion = Discussion.create!(
+  title: 'Welcome to the Discussion Forum!',
+  content: 'This is our first discussion. Feel free to reply and engage with other users!',
+  user: admin,
+  channel: channel
+)
+
+# Sample reply create krta hai discussion mein
+Reply.create!(
+  reply: 'Thank you for creating this forum! Looking forward to great discussions.',
+  discussion: discussion,
+  user: user
+)
 
 puts "Seed data created successfully!"
 puts "Admin login: admin@example.com / password123"

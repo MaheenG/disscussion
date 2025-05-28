@@ -1,0 +1,166 @@
+// Cute Theme Variables
+$primary-color: #FF6B6B;  // Coral pink
+$secondary-color: #4ECDC4; // Turquoise
+$accent-color: #FFE66D;    // Sunny yellow
+$background-color: #f9f4f9; // Light lavender
+$text-color: #6C5B7B;      // Soft purple
+
+// Custom Font Import
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap');
+
+// Global Styles
+body {
+  font-family: 'Quicksand', sans-serif;
+  background-color: $background-color;
+  color: $text-color;
+}
+
+// Navbar Styles
+.navbar {
+  background-color: white !important;
+  box-shadow: 0 4px 12px rgba(108, 91, 123, 0.1) !important;
+  
+  .navbar-item {
+    font-weight: 600;
+    color: $text-color;
+    
+    &:hover {
+      color: $primary-color !important;
+    }
+  }
+  
+  .title {
+    color: $primary-color !important;
+  }
+}
+
+// Button Styles
+.button {
+  border-radius: 20px !important;
+  font-weight: 600 !important;
+  transition: all 0.3s ease !important;
+  
+  &.is-info {
+    background-color: $secondary-color !important;
+    border-color: transparent !important;
+    
+    &:hover {
+      background-color: darken($secondary-color, 5%) !important;
+      transform: translateY(-2px) !important;
+    }
+  }
+}
+
+// Card Styles
+.card {
+  border-radius: 20px !important;
+  box-shadow: 0 8px 16px rgba(108, 91, 123, 0.1) !important;
+  border: 2px solid rgba(108, 91, 123, 0.05) !important;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-5px);
+  }
+}
+
+// Input Styles
+.input, .textarea {
+  border-radius: 15px !important;
+  border: 2px solid rgba(108, 91, 123, 0.2) !important;
+  
+  &:focus {
+    border-color: $secondary-color !important;
+    box-shadow: 0 0 0 2px rgba(78, 205, 196, 0.2) !important;
+  }
+}
+
+// Notification Styles
+.notification {
+  border-radius: 15px !important;
+  border: 2px dashed rgba(108, 91, 123, 0.2) !important;
+  
+  &.is-success {
+    background-color: lighten($secondary-color, 35%) !important;
+    color: darken($secondary-color, 20%) !important;
+  }
+  
+  &.is-danger {
+    background-color: lighten($primary-color, 25%) !important;
+    color: darken($primary-color, 20%) !important;
+  }
+}
+
+// Table Styles
+.table {
+  border-radius: 15px !important;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(108, 91, 123, 0.1) !important;
+  
+  thead th {
+    background-color: rgba(78, 205, 196, 0.1) !important;
+    color: $text-color !important;
+    font-weight: 600 !important;
+  }
+  
+  tbody td {
+    border-color: rgba(108, 91, 123, 0.1) !important;
+  }
+}
+
+// Custom Decorative Elements
+.section {
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle, $accent-color 0%, transparent 70%);
+    opacity: 0.3;
+    border-radius: 50%;
+    z-index: -1;
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle, $primary-color 0%, transparent 70%);
+    opacity: 0.2;
+    border-radius: 50%;
+    z-index: -1;
+  }
+}
+
+// Menu List Styles
+.menu-list {
+  a {
+    border-radius: 12px !important;
+    margin-bottom: 5px;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background-color: rgba(78, 205, 196, 0.1) !important;
+      transform: translateX(5px);
+    }
+    
+    &.is-active {
+      background-color: $secondary-color !important;
+      color: white !important;
+    }
+  }
+}
+
+// Tag Styles
+.tag {
+  border-radius: 12px !important;
+  font-weight: 600;
+  padding: 0.5em 1em !important;
+} 

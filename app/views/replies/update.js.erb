@@ -1,23 +1,15 @@
-// Replace the reply content
 var replyElement = document.querySelector('#reply-<%= @reply.id %>');
 replyElement.outerHTML = '<%= j render @reply %>';
 
-// Show success message
-var notification = document.createElement('div');
-notification.className = 'notification is-success is-light';
-notification.innerHTML = `
-  <button class="delete"></button>
-  Reply updated successfully!
-`;
+var notification = document.getElementById('notification');
+notification.innerHTML = '<%= j render "shared/notification", message: "Reply updated successfully", type: "success" %>';
+notification.classList.remove('hidden');
 
-document.querySelector('.discussion-form').insertAdjacentElement('beforebegin', notification);
-
-// Add event listener to close button
-notification.querySelector('.delete').addEventListener('click', function() {
-  notification.remove();
+var closeButton = notification.querySelector('.close');
+closeButton.addEventListener('click', function() {
+    notification.classList.add('hidden');
 });
 
-// Auto-remove notification after 3 seconds
 setTimeout(function() {
-  notification.remove();
+    notification.classList.add('hidden');
 }, 3000); 

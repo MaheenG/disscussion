@@ -10,29 +10,34 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20250526101420) do
+# Database ka structure define krta hai
+# Ye file automatically generate hoti hai migrations se
 
-  # These are extensions that must be enabled in order to support this database
+ActiveRecord::Schema.define(version: 20240318000000) do
+
+  # PostgreSQL extensions enable krta hai
   enable_extension "plpgsql"
 
+  # Channels table - different topics k liye channels store krta hai
   create_table "channels", force: :cascade do |t|
-    t.string "channel"
+    t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "discussion_id"
-    t.string "slug"
   end
 
+  # Discussions table - main discussions store krta hai
   create_table "discussions", force: :cascade do |t|
     t.string "title"
     t.text "content"
+    t.bigint "user_id"
+    t.bigint "channel_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "user_id"
-    t.integer "channel_id"
-    t.string "slug"
+    t.index ["channel_id"], name: "index_discussions_on_channel_id"
+    t.index ["user_id"], name: "index_discussions_on_user_id"
   end
 
+  # Friendly URLs k liye slugs store krta hai
   create_table "friendly_id_slugs", force: :cascade do |t|
     t.string "slug", null: false
     t.integer "sluggable_id", null: false
@@ -45,15 +50,18 @@ ActiveRecord::Schema.define(version: 20250526101420) do
     t.index ["sluggable_type"], name: "index_friendly_id_slugs_on_sluggable_type"
   end
 
+  # Replies table - discussions k replies store krta hai
   create_table "replies", force: :cascade do |t|
     t.text "reply"
+    t.bigint "discussion_id"
+    t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "discussion_id"
-    t.integer "user_id"
-    t.string "slug"
+    t.index ["discussion_id"], name: "index_replies_on_discussion_id"
+    t.index ["user_id"], name: "index_replies_on_user_id"
   end
 
+  # Roles table - user permissions k liye different roles store krta hai
   create_table "roles", force: :cascade do |t|
     t.string "name"
     t.string "resource_type"
@@ -65,25 +73,23 @@ ActiveRecord::Schema.define(version: 20250526101420) do
     t.index ["resource_type", "resource_id"], name: "index_roles_on_resource_type_and_resource_id"
   end
 
+  # Users table - registered users ki information store krta hai
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer "sign_in_count", default: 0, null: false
-    t.datetime "current_sign_in_at"
-    t.datetime "last_sign_in_at"
-    t.string "current_sign_in_ip"
-    t.string "last_sign_in_ip"
+    t.string "username"
+    t.boolean "admin", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "username"
-    t.boolean "admin", default: false, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["username"], name: "index_users_on_username", unique: true
   end
 
+  # Users aur Roles k beech relationship store krta hai
   create_table "users_roles", id: false, force: :cascade do |t|
     t.bigint "user_id"
     t.bigint "role_id"
@@ -92,4 +98,9 @@ ActiveRecord::Schema.define(version: 20250526101420) do
     t.index ["user_id"], name: "index_users_roles_on_user_id"
   end
 
+  # Foreign keys define krta hai tables k beech relationships k liye
+  add_foreign_key "discussions", "channels"
+  add_foreign_key "discussions", "users"
+  add_foreign_key "replies", "discussions"
+  add_foreign_key "replies", "users"
 end

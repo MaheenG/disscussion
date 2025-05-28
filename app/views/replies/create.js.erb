@@ -1,48 +1,33 @@
-var repliesContainer = document.getElementById('discussion-replies');
-var replyForm = document.getElementById('new_reply');
+var form = document.querySelector('#new_reply');
+form.reset();
 
 <% if @reply.persisted? %>
-  var newReplyHtml = '<%= j render @reply %>';
-  repliesContainer.insertAdjacentHTML('beforeend', newReplyHtml);
-  replyForm.reset();
+  var replies = document.querySelector('.replies');
+  replies.insertAdjacentHTML('beforeend', '<%= j render @reply %>');
 
-  // Show success message
-  var notification = document.createElement('div');
-  notification.className = 'notification is-success is-light';
-  notification.innerHTML = `
-    <button class="delete"></button>
-    Reply posted successfully!
-  `;
+  var notification = document.getElementById('notification');
+  notification.innerHTML = '<%= j render "shared/notification", message: "Reply created successfully", type: "success" %>';
+  notification.classList.remove('hidden');
 
-  document.querySelector('.reply-form').insertAdjacentElement('beforebegin', notification);
-
-  // Add event listener to close button
-  notification.querySelector('.delete').addEventListener('click', function() {
-    notification.remove();
+  var closeButton = notification.querySelector('.close');
+  closeButton.addEventListener('click', function() {
+      notification.classList.add('hidden');
   });
 
-  // Auto-remove notification after 3 seconds
   setTimeout(function() {
-    notification.remove();
+      notification.classList.add('hidden');
   }, 3000);
 <% else %>
-  // Show error message
-  var notification = document.createElement('div');
-  notification.className = 'notification is-danger is-light';
-  notification.innerHTML = `
-    <button class="delete"></button>
-    Error: <%= j @reply.errors.full_messages.join(', ') %>
-  `;
+  var notification = document.getElementById('notification');
+  notification.innerHTML = '<%= j render "shared/notification", message: @reply.errors.full_messages.join(", "), type: "error" %>';
+  notification.classList.remove('hidden');
 
-  document.querySelector('.reply-form').insertAdjacentElement('beforebegin', notification);
-
-  // Add event listener to close button
-  notification.querySelector('.delete').addEventListener('click', function() {
-    notification.remove();
+  var closeButton = notification.querySelector('.close');
+  closeButton.addEventListener('click', function() {
+      notification.classList.add('hidden');
   });
 
-  // Auto-remove notification after 5 seconds
   setTimeout(function() {
-    notification.remove();
+      notification.classList.add('hidden');
   }, 5000);
 <% end %>

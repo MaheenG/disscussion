@@ -17,6 +17,216 @@
 @import "bulma";
 @import "functions";
 @import "syntax";
+@import "cute_theme";
+
+$primary: #FF9ED8;
+$secondary: #87CEEB;
+$accent: #FFE66D;
+$background: #FFF5F9;
+$text-primary: #6C5B7B;
+$success: #98FB98;
+$warning: #FFB347;
+$danger: #FF8B94;
+
+@import "bulma";
+
+body {
+  background-color: $background;
+  font-family: 'Quicksand', sans-serif;
+  color: $text-primary;
+  min-height: 100vh;
+  position: relative;
+}
+
+.navbar {
+  background-color: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border-bottom: 3px solid $primary;
+
+  .navbar-item {
+    color: $text-primary;
+    font-weight: 600;
+    
+    &:hover {
+      color: $primary;
+      background-color: rgba($primary, 0.1);
+    }
+  }
+
+  .title {
+    color: $primary;
+  }
+}
+
+.card {
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  border: 2px solid rgba($primary, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+  background: white;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+  }
+
+  .card-header {
+    background: linear-gradient(45deg, $primary, $secondary);
+    border-radius: 18px 18px 0 0;
+    
+    .card-header-title {
+      color: white;
+      font-weight: 700;
+    }
+  }
+}
+
+.button {
+  border-radius: 25px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: none;
+  
+  &.is-primary {
+    background-color: $primary;
+    &:hover {
+      background-color: darken($primary, 5%);
+      transform: scale(1.05);
+    }
+  }
+  
+  &.is-secondary {
+    background-color: $secondary;
+    color: white;
+    &:hover {
+      background-color: darken($secondary, 5%);
+      transform: scale(1.05);
+    }
+  }
+}
+
+.input, .textarea {
+  border-radius: 15px;
+  border: 2px solid rgba($primary, 0.3);
+  transition: all 0.3s ease;
+  
+  &:focus {
+    border-color: $primary;
+    box-shadow: 0 0 0 2px rgba($primary, 0.2);
+  }
+}
+
+.notification {
+  border-radius: 15px;
+  font-weight: 500;
+  
+  &.is-success {
+    background-color: $success;
+    color: darken($success, 35%);
+  }
+  
+  &.is-danger {
+    background-color: $danger;
+    color: darken($danger, 35%);
+  }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.decorative-circles {
+  .circle {
+    position: fixed;
+    border-radius: 50%;
+    opacity: 0.15;
+    z-index: -1;
+    
+    &.circle-1 {
+      width: 200px;
+      height: 200px;
+      background: $primary;
+      top: 10%;
+      left: 5%;
+      animation: float 8s ease-in-out infinite;
+    }
+    
+    &.circle-2 {
+      width: 150px;
+      height: 150px;
+      background: $secondary;
+      bottom: 15%;
+      right: 10%;
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    &.circle-3 {
+      width: 100px;
+      height: 100px;
+      background: $accent;
+      top: 50%;
+      left: 15%;
+      animation: float 7s ease-in-out infinite;
+    }
+  }
+}
+
+.icon {
+  &.is-cute {
+    color: $primary;
+    transition: transform 0.3s ease;
+    
+    &:hover {
+      transform: scale(1.2) rotate(10deg);
+    }
+  }
+}
+
+.discussion-list {
+  .discussion-item {
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    background: white;
+    border: 2px solid rgba($primary, 0.2);
+    transition: all 0.3s ease;
+    
+    &:hover {
+      transform: translateX(10px);
+      border-color: $primary;
+    }
+  }
+}
+
+.footer {
+  background-color: white;
+  border-top: 3px solid $primary;
+  padding: 2rem;
+  margin-top: 3rem;
+}
+
+.loading {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba($primary, 0.2);
+  border-top-color: $primary;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.emoji-decoration {
+  position: fixed;
+  font-size: 2rem;
+  opacity: 0.5;
+  pointer-events: none;
+  animation: float 6s ease-in-out infinite;
+}
 
 .image {
   border-radius: 50%;
@@ -31,11 +241,13 @@
 
 .textarea {
   height: 250px;
-  font-family: Monaco, san-serif;
+  font-family: 'Quicksand', Monaco, san-serif;
   font-size: .9rem;
   padding: 1rem;
 }
 
 .discussion-title {
   margin-bottom: 0;
+  color: $text-color;
+  font-weight: 700;
 }
